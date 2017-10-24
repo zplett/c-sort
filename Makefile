@@ -6,4 +6,5 @@ sort.o: sort.c
 sort: sort.o
 	gcc sort.o -o sort
 
-clean: *.o sort
+clean:
+	rm -rf *.o sort
