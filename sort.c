@@ -84,13 +84,7 @@ int populate_array( char *lines[] ){
  *
  */
 int ascii_compar( const void *c1, const void *c2 ) {
-  // If the ascii value is greater
-  if( **(char**)c1 > **(char**)c2 ) return 1;
-  // If the ascii value is less than
-  else if( **(char**)c1 < **(char**)c2 ) return -1;
-
-  // If the ascii values are equal
-  return 0;
+  return strcmp( *(char**)c1, *(char**)c2 );
 }
 
 /** Compare the alphabetical value of two characters (case insensitive)
