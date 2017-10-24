@@ -16,8 +16,10 @@ int main( int argc, char *argv[] ) {
     lines[i] = malloc( LINE_LENGTH + 1 );
   }
   populate_array(lines);
-  for(char* ptr = lines[0]; *ptr != '\0'; ++ptr){
-    printf("%c", *ptr);
+  for( int i = 0; i < 10000; ++i) {
+    for( char* ptr = lines[i] ; *ptr != '\0'; ++ptr ){
+      printf("%c", *ptr);
+    }
   }
   
   for(int i = 0; i < 10000; ++i){
