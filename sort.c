@@ -38,14 +38,13 @@ void populate_array( char *lines[] ){
   char *line = lines[i];
   // Input loop
   for( int c = getchar(); c != EOF; c = getchar()) {
+    // Initialize character no matter what
+    *line = c;
     // If new line, point to the next line in the array
     if( c == '\n' )
       line = lines[++i];
-    else {
-      // Insert the character
-      *line = c;
+    else 
       // Point to the next character slot
       ++line;
-    }
   }
 }
