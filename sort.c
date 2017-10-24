@@ -62,6 +62,7 @@ int populate_array( char *lines[] ){
       // Point to the next character slot
       ++line;
   }
+  return i + 1;
 }
 
 /** Compare the ascii values of two characters
