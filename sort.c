@@ -45,8 +45,8 @@ int main( int argc, char *argv[] ) {
   
   // Populate the arrays
   int line_count = populate_array(lines);
-  // Sort the lines
 
+  // Sort the lines
   // Determines which sorting method to use based on the flags
   if ( fold_flag == 0 && num_flag == 0 )
     qsort( (void*)lines, line_count, sizeof(lines[0]), ascii_compar );
