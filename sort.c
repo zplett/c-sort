@@ -25,10 +25,8 @@ int main( int argc, char *argv[] ) {
     
     if ( strcmp(argv[1], "-f") == 0 )
       fold_flag = 1;
-
     else if ( strcmp(argv[1], "-n") == 0 )
       num_flag = 1;
-
     else {
       printf( "Error, you entered an invalid flag.\n" );
       exit(-1);  
