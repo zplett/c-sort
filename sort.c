@@ -11,15 +11,19 @@ Ezra Goss Zac Plett
 static void populate_array(char *lines[]);
 
 int main( int argc, char *argv[] ) {
-  char **lines = (char **)malloc( MAX_LINES );
-  for( int i = 0; i < MAX_LINES; ++i ){
-    lines[i] = (char *)malloc( LINE_LENGTH );
+  char **lines = malloc( MAX_LINES + 1 );
+  for( int i = 0; i < 10000; ++i ){
+    lines[i] = malloc( LINE_LENGTH + 1 );
   }
   populate_array(lines);
-  /*  for(char* ptr = lines[0]; *ptr != '\0'; ++ptr){
+  for(char* ptr = lines[0]; *ptr != '\0'; ++ptr){
     printf("%c", *ptr);
   }
-  */
+  
+  for(int i = 0; i < 10000; ++i){
+    free(lines[i]);
+  }
+  free(lines);
 }
 
 /** Populate the array with line input
