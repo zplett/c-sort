@@ -13,21 +13,21 @@ static void populate_array(char *lines[]);
 int main( int argc, char *argv[] ) {
   char **lines = malloc( MAX_LINES * sizeof(char*) );
   for( int i = 0; i < MAX_LINES; ++i ){
-    lines[i] = malloc( LINE_LENGTH * sizeof(char) );
+    lines[i] = malloc( LINE_LENGTH * sizeof(char) + 1 );
   }
   populate_array(lines);
   for( int i = 0; i < MAX_LINES; ++i) {
-    for( char* ptr = lines[i] ; *ptr != '\0'; ++ptr ){
+    for( char* ptr = lines[i] ; *ptr == '\0' ; ++ptr ){
       printf("%c", *ptr);
     }
   }
-  
-  for(int i = 0; i < MAX_LINES; ++i){
+    
+  for(int i = 0; i < MAX_LINES; ++i) {
     free(lines[i]);
   }
   free(lines);
 }
-
+  
 /** Populate the array with line input
 
  */
