@@ -12,14 +12,15 @@ static void populate_array(char *lines[]);
 
 int main( int argc, char *argv[] ) {
   char **lines = malloc( MAX_LINES * sizeof(char*) );
-  for( int i = 0; i < MAX_LINES; ++i ){
+  for( int i = 0; i < MAX_LINES; ++i ) {
     lines[i] = malloc( LINE_LENGTH * sizeof(char) + 1 );
   }
   populate_array(lines);
   for( int i = 0; i < MAX_LINES; ++i) {
-    for( char* ptr = lines[i] ; *ptr == '\0' ; ++ptr ){
+    for( char *ptr = lines[i] ; *ptr == '\0' ; ++ptr ){
       printf("%c", *ptr);
     }
+    if( *lines[i + 1] == '\0' ) break;
   }
     
   for(int i = 0; i < MAX_LINES; ++i) {
