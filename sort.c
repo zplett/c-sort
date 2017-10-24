@@ -17,7 +17,10 @@ static int numeric_compar( const char*, const char* );
 
 int main( int argc, char *argv[] ) {
 
+  // Flags to indicate which method of sorting to use
   int fold_flag = 0, num_flag = 0;
+
+  // Checks if flag was entered, if not uses default sorting based on ASCII values 
   if ( argc > 1) {
     
     if ( strcmp(argv[1], "-f") == 0 )
@@ -26,6 +29,11 @@ int main( int argc, char *argv[] ) {
     else if ( strcmp(argv[1], "-n") == 0 )
       num_flag = 1;
 
+    else {
+      printf( "Error, you entered an invalid flag.\n" );
+      exit(-1);  
+    }
+    
   }
   
   // Allocate for outer array
@@ -37,7 +45,8 @@ int main( int argc, char *argv[] ) {
   // Populate the arrays
   int line_count = populate_array(lines);
   // Sort the lines
-  // TODO: not calling comparator
+
+  // Determines which sorting method to use based on the flags
   if ( fold_flag == 0 && num_flag == 0 )
     qsort( (void*)lines, line_count, sizeof(lines[0]), ascii_compar );
   else if ( fold_flag == 1 )
