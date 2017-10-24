@@ -30,10 +30,13 @@ int main( int argc, char *argv[] ) {
   
   // Allocate for outer array
   char **lines = malloc( MAX_LINES * sizeof(char*) );
+
   // Allocate for inner array
   for( int i = 0; i < MAX_LINES; ++i ) {
     lines[i] = malloc( LINE_LENGTH * sizeof(char) );
+    memset( lines[i], '\0', sizeof( *lines[i] ) );
   }
+  
   // Populate the arrays
   int line_count = populate_array(lines);
   // Sort the lines
