@@ -1,4 +1,4 @@
-/*
+OB/*
 Ezra Goss Zac Plett
  */
 
@@ -14,62 +14,89 @@ static int populate_array( char *lines[] );
 static int ascii_compar( const void*, const void* );
 static int alpha_compar( const void*, const void* );
 static int numeric_compar( const char*, const char* );
+static void print_lines( char *lines[] );
+static void free_lines( char *lines[] );
+static void process_flags ( int argc, char *argv[], char *lines[], int line_count );
 
 int main( int argc, char *argv[] ) {
 
+  // Allocates memory for the array
+  char **lines = malloc( MAX_LINES * sizeof(char*) );;
+  for ( int i = 0; i < MAX_LINES; ++i ) {
+    lines[i] = malloc( LINE_LENGTH * sizeof(char) );
+  }
+  
+  // Populate the arrays
+  int line_count = populate_array(lines);
+
+  // Processes flags
+  process_flags( argc, argv, lines, line_count );
+  
+  // Prints the lines
+  print_lines( lines );
+  // Frees allocated memory
+  free_lines( lines );
+
+}
+
+// Processes the flags input by the user
+void process_flags( int argc, char *argv[], char *lines[], int line_count ) {
   // Flags to indicate which method of sorting to use
   int fold_flag = 0, num_flag = 0;
 
-  // Checks if flag was entered, if not uses default sorting based on ASCII values 
+  // Checks if flag was entered, if not uses default sorting based on ASCII values
   if ( argc > 1) {
-    
+
     if ( strcmp(argv[1], "-f") == 0 )
       fold_flag = 1;
     else if ( strcmp(argv[1], "-n") == 0 )
       num_flag = 1;
     else {
       printf( "Error, you entered an invalid flag.\n" );
-      exit(-1);  
+      exit(-1);
     }
-    
-  }
-  
-  // Allocate for outer array
-  char **lines = malloc( MAX_LINES * sizeof(char*) );
 
-  // Allocate for inner array
-  for( int i = 0; i < MAX_LINES; ++i ) {
-    lines[i] = malloc( LINE_LENGTH * sizeof(char) );
-    memset( lines[i], '\0', sizeof( *lines[i] ) );
   }
-  
-  // Populate the arrays
-  int line_count = populate_array(lines);
 
-  // Sort the lines
   // Determines which sorting method to use based on the flags
   if ( fold_flag == 0 && num_flag == 0 )
     qsort( (void*)lines, line_count, sizeof(lines[0]), ascii_compar );
   else if ( fold_flag == 1 )
     qsort( (void*)lines, line_count, sizeof(lines[0]), alpha_compar );
-  for( int i = 0; i < MAX_LINES; ++i) {
-    for( char* ptr = lines[i] ; *ptr != '\0'; ++ptr ){
-      printf( "%c", *ptr );
+
+  //else if ( num_flag == 1 )
+    //TODO: Call qsort with num
+    
+}
+
+// Prints the lines
+void print_lines( char *lines[] ) {
+  
+  // Prints the sorted buffer
+  for ( int i = 0; i < MAX_LINES; ++i ) {
+    for ( char *ptr = lines[i]; *ptr != '\0'; ++ptr ) {
+      printf ( "%c", *ptr);
     } printf( "\n" );
-    if( *lines[i + 1] == '\0' )
+    if ( *lines[i + 1] == '\0' )
       break;
   }
-   
-  // Free inner arrays
-  for( int i = 0; i < MAX_LINES; ++i ) {
+
+}
+
+// Frees the array's allocated memory 
+void free_lines( char *lines[] ) {
+
+  // Frees inner array
+  for ( int i = 0; i < MAX_LINES; ++i ) {
     free( lines[i] );
   }
-  // Free outer array
+  // Frees outer array
   free( lines );
-}
-  
-/** Populate the array with line input
 
+}
+
+/* Populate the array with line input
+ *
  */
 int populate_array( char *lines[] ){
   // Line number
