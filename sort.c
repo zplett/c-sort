@@ -36,10 +36,13 @@ int main( int argc, char *argv[] ) {
   
   // Allocate for outer array
   char **lines = malloc( MAX_LINES * sizeof(char*) );
+
   // Allocate for inner array
   for( int i = 0; i < MAX_LINES; ++i ) {
     lines[i] = malloc( LINE_LENGTH * sizeof(char) );
+    memset( lines[i], '\0', sizeof( *lines[i] ) );
   }
+  
   // Populate the arrays
   int line_count = populate_array(lines);
   // Sort the lines
@@ -91,13 +94,7 @@ int populate_array( char *lines[] ){
  *
  */
 int ascii_compar( const void *c1, const void *c2 ) {
-  // If the ascii value is greater
-  if( **(char**)c1 > **(char**)c2 ) return 1;
-  // If the ascii value is less than
-  else if( **(char**)c1 < **(char**)c2 ) return -1;
-
-  // If the ascii values are equal
-  return 0;
+  return strcmp( *(char**)c1, *(char**)c2 );
 }
 
 /** Compare the alphabetical value of two characters (case insensitive)
