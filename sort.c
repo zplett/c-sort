@@ -7,6 +7,7 @@ Ezra Goss Zac Plett
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <unistd.h>
 
 // Static function declarations
 int populate_array( char *lines[] );
@@ -39,10 +40,10 @@ int main( int argc, char *argv[] ) {
 void process_flags( int argc, char *argv[], char *lines[] ) {
   // Flags to indicate which method of sorting to use
   int fold_flag = 0, num_flag = 0;
-
+  
   // Checks if flag was entered, if not uses default sorting based on ASCII values
   if ( argc > 1) {
-
+    
     if ( strcmp(argv[1], "-f") == 0 ) {
       fold_flag = 1;
     }
@@ -52,9 +53,25 @@ void process_flags( int argc, char *argv[], char *lines[] ) {
       printf( "Error, you entered an invalid flag.\n" );
       exit(-1);
     }
-
+    
   }
-
+  /*
+    int ch;
+    while( ch = getopt( argc, argv, "fn" ) != EOF ) {
+    switch( ch ) {
+    case 'f':
+    fold_flag = 1;
+    break;
+    case 'n':
+    num_flag = 1;
+    break;
+    default:
+    continue;
+    }
+    argc -= optind;
+    argv += optind;
+    }
+  */
   // Populates the array
   int line_count = populate_array(lines);
   
