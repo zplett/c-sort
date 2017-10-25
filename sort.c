@@ -1,22 +1,21 @@
-OB/*
+/*
 Ezra Goss Zac Plett
  */
 
+#include "sort.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#define MAX_LINES 1024*1024
-#define LINE_LENGTH 1024
 
 // Static function declarations
-static int populate_array( char *lines[] );
-static int ascii_compar( const void*, const void* );
-static int alpha_compar( const void*, const void* );
-static int numeric_compar( const char*, const char* );
-static void print_lines( char *lines[] );
-static void free_lines( char *lines[] );
-static void process_flags ( int argc, char *argv[], char *lines[], int line_count );
+int populate_array( char *lines[] );
+int ascii_compar( const void*, const void* );
+int alpha_compar( const void*, const void* );
+int numeric_compar( const char*, const char* );
+void print_lines( char *lines[] );
+void free_lines( char *lines[] );
+void process_flags( int argc, char *argv[], char *lines[] );
 
 int main( int argc, char *argv[] ) {
 
@@ -26,11 +25,8 @@ int main( int argc, char *argv[] ) {
     lines[i] = malloc( LINE_LENGTH * sizeof(char) );
   }
   
-  // Populate the arrays
-  int line_count = populate_array(lines);
-
-  // Processes flags
-  process_flags( argc, argv, lines, line_count );
+  // Processes flags and sorts accordingly
+  process_flags( argc, argv, lines );
   
   // Prints the lines
   print_lines( lines );
@@ -40,15 +36,16 @@ int main( int argc, char *argv[] ) {
 }
 
 // Processes the flags input by the user
-void process_flags( int argc, char *argv[], char *lines[], int line_count ) {
+void process_flags( int argc, char *argv[], char *lines[] ) {
   // Flags to indicate which method of sorting to use
   int fold_flag = 0, num_flag = 0;
 
   // Checks if flag was entered, if not uses default sorting based on ASCII values
   if ( argc > 1) {
 
-    if ( strcmp(argv[1], "-f") == 0 )
+    if ( strcmp(argv[1], "-f") == 0 ) {
       fold_flag = 1;
+    }
     else if ( strcmp(argv[1], "-n") == 0 )
       num_flag = 1;
     else {
@@ -58,6 +55,9 @@ void process_flags( int argc, char *argv[], char *lines[], int line_count ) {
 
   }
 
+  // Populates the array
+  int line_count = populate_array(lines);
+  
   // Determines which sorting method to use based on the flags
   if ( fold_flag == 0 && num_flag == 0 )
     qsort( (void*)lines, line_count, sizeof(lines[0]), ascii_compar );
