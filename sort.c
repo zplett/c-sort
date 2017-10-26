@@ -55,23 +55,6 @@ void process_flags( int argc, char *argv[], char *lines[] ) {
     }
     
   }
-  /*
-    int ch;
-    while( ch = getopt( argc, argv, "fn" ) != EOF ) {
-    switch( ch ) {
-    case 'f':
-    fold_flag = 1;
-    break;
-    case 'n':
-    num_flag = 1;
-    break;
-    default:
-    continue;
-    }
-    argc -= optind;
-    argv += optind;
-    }
-  */
   // Populates the array
   int line_count = populate_array(lines);
   
@@ -145,17 +128,19 @@ int ascii_compar( const void *c1, const void *c2 ) {
  *
  */
 int alpha_compar( const void *c1, const void *c2 ) {
-  // Dummy variables
-  char l1, l2, *p1 = &l1, *p2 = &l2;
-  // Make the comparison case insensitive with new variables
-  if( isalpha(**(char**)c1) && (**(char**)c2) ) {
-    l1 = tolower( **(char**)c1 );
-    l2 = tolower( **(char**)c2 );
-  } else {
-    l1 = **(char**)c1;
-    l2 = **(char**)c2;
+  char *l1 = (char*)c1, *l2 = (char*)c2;
+  // Make each character in the first string lower case
+  for(; *l1; ++l1){
+    *l1 = tolower( *l1 );
   }
+  // Make each character in the second string lower case
+  for(; *l2; ++l2){
+    *l2 = tolower( *l2 );
+  }
+  // Set the pointers equal to the first character of their strings
+  l1 = (char*)c1;
+  l2 = (char*)c2;
   
-  // Run ascii_compar on altered characters
-  return ascii_compar( &p1, &p2 );
+  // Run ascii_compar on altered character pointers
+  return ascii_compar( &l1, &l2 );
 }
