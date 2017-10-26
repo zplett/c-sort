@@ -1,4 +1,4 @@
-#define MAX_LINES 1024*1024
+#define MAX_LINES 10
 
 #define LINE_LENGTH 1024
 

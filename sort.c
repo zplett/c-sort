@@ -76,7 +76,8 @@ void print_lines( char *lines[] ) {
   for ( int i = 0; i < MAX_LINES; ++i ) {
     for ( char *ptr = lines[i]; *ptr != '\0'; ++ptr ) {
       printf ( "%c", *ptr);
-    } printf( "\n" );
+    }
+    printf( "\n" );
     if ( *lines[i + 1] == '\0' )
       break;
   }
@@ -129,6 +130,7 @@ int ascii_compar( const void *c1, const void *c2 ) {
  */
 int alpha_compar( const void *c1, const void *c2 ) {
   char *l1 = (char*)c1, *l2 = (char*)c2;
+
   // Make each character in the first string lower case
   for(; *l1; ++l1){
     *l1 = tolower( *l1 );
