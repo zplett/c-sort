@@ -9,6 +9,7 @@ Ezra Goss Zac Plett
 #include <ctype.h>
 #include <unistd.h>
 #include <assert.h>
+//#define DEBUG
 
 // Static function declarations
 long mystrtol( char *start, char **rest);
@@ -51,6 +52,7 @@ static void test_functions() {
   // Sets up an array with the same input as a line of -n input
   char* line1 = " 5289328 Cards in a standard deck";
   char* line2 = " 58 Cards in a standard deck";
+  char* line3 = " 5289328 in a standard deck";
   long value;
   char *rest;
 
@@ -61,6 +63,7 @@ static void test_functions() {
   printf("%ld%s\n", value, rest);
   
   assert( numeric_compar( &line1, &line2 ) > 0 );
+  assert( numeric_compar( &line1, &line3 ) > 0 );
   printf("All test cases passed!\n");
 }
 
@@ -180,11 +183,9 @@ void process_flags( int argc, char *argv[], char *lines[], int line_count ) {
   if ( fold_flag == 0 && num_flag == 0 )
     qsort( lines, line_count, sizeof(lines[0]), ascii_compar );
   else if ( fold_flag == 1 )
-    qsort( lines, line_count, sizeof(lines[0]), alpha_compar );
-  
-    
-  //else if ( num_flag == 1 )
-    //TODO: Call qsort with num
+    qsort( lines, line_count, sizeof(lines[0]), alpha_compar );      
+  else if ( num_flag == 1 )
+    qsort( lines, line_count, sizeof(lines[0]), numeric_compar );
     
 }
 
@@ -311,8 +312,6 @@ int alpha_compar( const void *c1, const void *c2 ) {
 int numeric_compar( const void *c1, const void *c2 ) {
   // The rest of the word after the first number
   char *rest1, *rest2;
-  printf("String: %s\n", *(char**)c1);
-  printf("String: %s\n", *(char**)c2);
   
   // Number conversions of the string
   long num1 = mystrtol( *(char**)c1, &rest1 );
@@ -323,5 +322,5 @@ int numeric_compar( const void *c1, const void *c2 ) {
   else if( num1 > num2 )
     return 1;
   else
-    return ascii_compar( c1, c2 );
+    return ascii_compar( &rest1, &rest2 );
 }
