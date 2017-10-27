@@ -19,7 +19,7 @@ int alpha_compar( const void*, const void* );
 
 #ifndef NUMERIC_COMPAR
 #define NUMERIC_COMPAR
-int numeric_compar( const char*, const char* );
+int numeric_compar( const void*, const void* );
 #endif
 
 #ifndef PRINT_LINES

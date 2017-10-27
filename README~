@@ -1,9 +1,0 @@
-1. Zac Plett and Ezra Goss - This program reads in words input line by line by the user. These words are then sorted based on flags given when running the program.
-
-2. sort.c - This is the main program in the lab, it reads the user input and then calls the appropriate sorter functions based on which method is being used.
-
-   Makefile - Our makefile used to compile the programs.
-
-   sort.h - This is the header file containing function and macro definitions used in sort.c.
-
-   textfile - This contains sample text used for testing output. 

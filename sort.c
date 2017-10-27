@@ -8,13 +8,14 @@ Ezra Goss Zac Plett
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <assert.h>
 
 // Static function declarations
 long mystrtol( char *start, char **rest);
 int populate_array( char *lines[] );
 int ascii_compar( const void*, const void* );
 int alpha_compar( const void*, const void* );
-int numeric_compar( const char*, const char* );
+int numeric_compar( const void*, const void* );
 void print_lines( char *lines[], int line_num );
 void free_lines( char *lines[], int line_num );
 void process_flags( int argc, char *argv[], char *lines[], int line_count );
@@ -48,16 +49,19 @@ int main( int argc, char *argv[] ) {
 static void test_functions() {
 
   // Sets up an array with the same input as a line of -n input
-  char line[] = " 5289328 Cards in a standard deck";
+  char* line1 = " 5289328 Cards in a standard deck";
+  char* line2 = " 58 Cards in a standard deck";
   long value;
   char *rest;
 
   // Calls mystrol
-  value = mystrtol( line, &rest );
+  value = mystrtol( line1, &rest );
 
   // Prints the returned long to verify that it gives the correct number
-  printf("%ld\n", value);
-
+  printf("%ld%s\n", value, rest);
+  
+  assert( numeric_compar( &line1, &line2 ) > 0 );
+  printf("All test cases passed!\n");
 }
 
 // Our implementation of quick sort
@@ -307,5 +311,17 @@ int alpha_compar( const void *c1, const void *c2 ) {
 int numeric_compar( const void *c1, const void *c2 ) {
   // The rest of the word after the first number
   char *rest1, *rest2;
+  printf("String: %s\n", *(char**)c1);
+  printf("String: %s\n", *(char**)c2);
+  
   // Number conversions of the string
+  long num1 = mystrtol( *(char**)c1, &rest1 );
+  long num2 = mystrtol( *(char**)c2, &rest2 );
+  // Comparisons
+  if( num1 < num2 )
+    return -1;
+  else if( num1 > num2 )
+    return 1;
+  else
+    return ascii_compar( c1, c2 );
 }
