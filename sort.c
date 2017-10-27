@@ -147,6 +147,7 @@ long mystrtol( char *start, char **rest) {
   }
   // Returns 0 when there aren't digits after leading whitespace
   else {
+    *rest = start;
     return 0;
   }
   // Sets rest to the correct position (either after the digits or at the start of the line) depending on the value of the input *rest
