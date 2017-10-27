@@ -24,15 +24,15 @@ int numeric_compar( const char*, const char* );
 
 #ifndef PRINT_LINES
 #define PRINT_LINES
-void print_lines( char *lines[] );
+void print_lines( char *lines[], int line_num );
 #endif
 
 #ifndef FREE_LINES
 #define FREE_LINES
-void free_lines( char *lines[] );
+void free_lines( char *lines[], int line_num );
 #endif
 
 #ifndef PROCESS_FLAGS
 #define PROCESS_FLAGS
-void process_flags( int argc, char *argv[], char *lines[] );
+void process_flags( int argc, char *argv[], char *lines[], int line_count );
 #endif
