@@ -8,7 +8,6 @@ Ezra Goss Zac Plett
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
-#define DEBUG
 
 // Static function declarations
 long mystrtol( char *start, char **rest);
@@ -300,4 +299,13 @@ int alpha_compar( const void *c1, const void *c2 ) {
   
   // Return
   return comp;
+}
+
+/** Numeric Comparator
+ *
+ */
+int numeric_compar( const void *c1, const void *c2 ) {
+  // The rest of the word after the first number
+  char *rest1, *rest2;
+  // Number conversions of the string
 }
