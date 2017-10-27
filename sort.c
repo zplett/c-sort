@@ -268,8 +268,8 @@ int ascii_compar( const void *c1, const void *c2 ) {
  */
 int alpha_compar( const void *c1, const void *c2 ) {
   // Allocate to the temporary lower case string copies
-  char *l1 = malloc( strlen(*(char**)c1 + 1) ),
-    *l2 = malloc( strlen(*(char**)c2 + 1) ),
+  char *l1 = malloc( strlen(*(char**)c1) + 1 ),
+    *l2 = malloc( strlen(*(char**)c2) + 1 ),
     *start1 = l1,
     *start2 = l2;
   
@@ -278,12 +278,12 @@ int alpha_compar( const void *c1, const void *c2 ) {
   l2 = strcpy( l2, *(char**)c2 );
 
   // Make each character in the first string lower case
-  for( int i = 0; i < (int)strlen(*(char**)c1) ; ++i ){
+  for( int i = 0; i < (int)strlen(*(char**)c1); ++i ){
     l1[i] = tolower( l1[i] );
   }
 
   // Make each character in the second string lower case
-  for( int i = 0; i < (int)strlen(*(char**)c2) ; ++i ){
+  for( int i = 0; i < (int)strlen(*(char**)c2); ++i ){
     l2[i] = tolower( l2[i] );
   }
 
