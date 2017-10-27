@@ -11,8 +11,14 @@
 Sort takes in a series of words and sorts them based on flags input by the user
 
 .SH OPTIONS
-.IP "-f, -n, -r, -h or -?"
-Flags f and n determines which sorting method to use (besides the default), flag r reverses the sorted output and flags h and ? bring up a help message for how to use the program.
+.IP "-f"
+Flag f indicates folding sort, which will sort the words alphabetically ignoring case.
+.IP "-n"
+Flag n indicates numeric sort, this will take in a number before the words on each line and sort accordingly based on these values. Any line without a value in front will be given a default value of 0.
+.IP "-r"
+Flag r reverses the order of the sorted elements.
+.IP "-? or -h"
+Flags ? and h will display a help message, explaining how to use the program.
 
 .SH AUTHORS
 Zac Plett and Ezra Goss (Fall 2017)
