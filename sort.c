@@ -214,7 +214,7 @@ char process_flags( int argc, char *argv[], int *reverse ) {
   char flag = 0;
 
   int c;
-  while( (c = getopt( argc, argv, "rnf")) != EOF ) {
+  while( (c = getopt( argc, argv, "rnfh?")) != EOF ) {
     switch( c ) {
     case 'f': case 'n':
       flag = c;
@@ -222,9 +222,12 @@ char process_flags( int argc, char *argv[], int *reverse ) {
     case 'r':
       *reverse = -1;
       break;
+    case '?': case 'h':
+      printf("Welcome to sort.c! To use the program with default ASCII sort, just run the executable and start typing in words line by line, the sorting will take place upon entering EOF. If you would rather sort by non-case-sensitive alphabetical order use \"-f\" or use \"-n\" to sort by numeric values assigned to the beginning of each line.\n");
+      exit(0);
     default:
-      printf("You have entered an invalid flag: %c\n", c );
-      break;
+      printf("Error, you have entered an invalid flag: %c\n", c );
+      exit(-1);
     }
   }
   return flag;
