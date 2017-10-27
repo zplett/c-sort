@@ -8,8 +8,8 @@
 
    textfile - This contains sample text used for testing output.
 
-3. There are no known bugs and all functions are complete.
+3. There are no known bugs and all functions are complete. There is a warning for an unused function but if you look in the code, it isn't unused it's defined within an #ifdef dependent on the macro DEBUG. We left it in since while grading you might want to see what is happening if something is going wrong. 
 
-4. We guessed that the lab would take us around 10 hours to complete and it did in fact take around 10 hours in total.
+4. We guessed that the lab would take us around 10 hours to complete and it did in fact take around 10 hours in total. We are both using our first extensions since this week was particularly busy with work for other classes.
 
 5. We affirm that we have adhered to the Honor Code on this assignment. 

@@ -19,12 +19,12 @@ int alpha_compar( const void*, const void* );
 int numeric_compar( const void*, const void* );
 void print_lines( char *lines[], int line_num );
 void free_lines( char *lines[], int line_num );
-void process_flags( int argc, char *argv[], char *lines[], int line_count );
+char process_flags( int argc, char *argv[], int* reverse );
+void sort( char* lines[], int line_count, int reverse, char flag );
 
 // Static functions
 static void test_functions();
 static void quick_sort( char *lines[], int left, int right, int(*compar)(const void*, const void*), int r_flag );
-static int quick_sort_helper( char *lines[], int left, int right, int(*compar)(const void*, const void*) );
 
 int main( int argc, char *argv[] ) {
 
@@ -35,9 +35,16 @@ int main( int argc, char *argv[] ) {
   // Allocates memory for the array
   char **lines = malloc( MAX_LINES * sizeof(char*) );
   
+  int reverse = 1;
+  
   // Processes flags and sorts accordingly
+  char flag = process_flags( argc, argv, &reverse );
+ 
+  // Populate the array
   int line_num = populate_array( lines );
-  process_flags( argc, argv, lines, line_num );
+
+  // Sort
+  sort( lines, line_num, reverse, flag );
   
   // Prints the lines
   print_lines( lines, line_num );
@@ -67,52 +74,93 @@ static void test_functions() {
   printf("All test cases passed!\n");
 }
 
-// Our implementation of quick sort
-static void quick_sort( char *lines[], int left, int right,  int(*compar)(const void*, const void*), int r_flag ) {
+/** Swap two elements of an array
+ */
+static void swap( char *lines[], int index1, int index2 ) {
 
-  // Checks whether the array has enough elements to sort
-  if ( right > 1 ) {
-    // Sets the pivot and then calls quick_sort() recursively using this value
-    int pivot = quick_sort_helper( lines, left, right, compar );
-    quick_sort( lines, left,  pivot - 1, compar, r_flag );
-    quick_sort( lines, pivot + 1, right, compar, r_flag );
-  }
+  // Temp string
+  char *temp;
 
-}
+  #ifdef DEBUG
+  // Print progress
+  printf("Swapping entry %d, '%s' to %d, and entry %d, '%s' to %d.\n",
+         index1, lines[index1], index2, index2, lines[index2], index1 );
+  #endif
+  
+  // Swap the strings
+  temp = lines[index1];
+  lines[index1] = lines[index2];
+  lines[index2] = temp;
+  
+} 
 
 // Helper function for quick sort
-static int quick_sort_helper( char *lines[], int left, int right, int(*compar)(const void*, const void*) ) {
+static void quick_sort( char *lines[], int left, int right, int(*compar)(const void*, const void*), int r ) {
+  
+  int pivot, i, j;
+  const char * key;
 
-  char *pivot, *temp;
-  int i, j;
-
+  // Catch the simple case
+  if( right - left == 1 ) {
+    if( r*compar( lines[left], lines[right]) > 0 ) {
+      #ifdef DEBUG
+      printf("Only one entry: ");
+      #endif
+      swap( lines, left, right );
+    }
+    return;
+  }
+  
   // Establishes the pivot and marker values
-  pivot = lines[left];
-  i = left;
-  j = right + 1;
+  pivot = ( left + right ) / 2;
+  key = lines[pivot];
+  #ifdef DEBUG
+  printf("Sorting from %d to %d: pivot is at %d, '%s'\n",
+         left, right, pivot, key);
+  #endif
+  swap( lines, left, pivot );
+  
+  i = left + 1;
+  j = right;
 
   // Increases the marker values until the leftmost marker surpasses the rightmost marker
   // Each time these values are incremented, their corresponding values in the array are swaped
-  for(;;) {
-    while( compar( &lines[i], &pivot ) <= 0 && i <= right )
+  while( i < j ) {  
+    while(  i <= right && r*compar( lines[i], key ) < 0 ) 
       ++i;
-    while( compar( &lines[j], &pivot ) > 0 )
-      ++j;
-    if( i >= j )
-      break;
-    temp = lines[i];
-    lines[i] = lines[j];
-    lines[j] = temp;
+    while( j >= left && r*compar( lines[j], key ) > 0 )
+      --j;
+    
+    if( i < j ) {
+      #ifdef DEBUG
+      printf("Out of order: '%s' > '%s', but %d < %d: ",
+             lines[i], lines[j], i, j);
+      #endif
+      swap( lines, i, j );
+    }
   }
 
-  // Since the for loop will break before the final swap, this takes care of the last swap needed
-  temp = lines[i];
-  lines[i] = lines[j];
-  lines[j] = temp;
+  #ifdef DEBUG
+  printf("Putting the pivot back: %d", j - 1 );
+  #endif
+  
+  swap( lines, left, j );
 
-  // Returns the value used for the pivot
-  return j;
+  if( left < j - 1 ) {
+    #ifdef DEBUG
+    printf("Sub-sorting lower entries\n");
+    #endif
+    // Sort the left half
+    quick_sort( lines, left, j - 1, compar, r );
+  }
 
+  if( j + 1 < right ) {
+    #ifdef DEBUG
+    printf("Sub-sorting upper entries\n");
+    #endif
+    quick_sort( lines, j + 1, right, compar, r );
+  }
+  
 }
 
 // Converts String representation of a number to a long
@@ -161,33 +209,41 @@ long mystrtol( char *start, char **rest) {
 }
 
 // Processes the flags input by the user
-void process_flags( int argc, char *argv[], char *lines[], int line_count ) {
+char process_flags( int argc, char *argv[], int *reverse ) {
   // Flags to indicate which method of sorting to use
-  int fold_flag = 0, num_flag = 0;
-  
-  // Checks if flag was entered, if not uses default sorting based on ASCII values
-  if ( argc > 1) {
-    
-    if ( strcmp(argv[1], "-f") == 0 ) {
-      fold_flag = 1;
-    }
-    else if ( strcmp(argv[1], "-n") == 0 )
-      num_flag = 1;
-    else {
-      printf( "Error, you entered an invalid flag.\n" );
-      exit(-1);
-    }
-    
-  }
+  char flag = 0;
 
+  int c;
+  while( (c = getopt( argc, argv, "rnf")) != EOF ) {
+    switch( c ) {
+    case 'f': case 'n':
+      flag = c;
+      break;
+    case 'r':
+      *reverse = -1;
+      break;
+    default:
+      printf("You have entered an invalid flag: %c\n", c );
+      break;
+    }
+  }
+  return flag;
+}
+
+void sort( char* lines[], int line_count, int reverse, char flag ) {
+
+  // Handle the scenario where there is no input
+  if( line_count == 0 )
+    return;
+  
   // Determines which sorting method to use based on the flags
-  if ( fold_flag == 0 && num_flag == 0 )
-    qsort( lines, line_count, sizeof(lines[0]), ascii_compar );
-  else if ( fold_flag == 1 )
-    qsort( lines, line_count, sizeof(lines[0]), alpha_compar );      
-  else if ( num_flag == 1 )
-    qsort( lines, line_count, sizeof(lines[0]), numeric_compar );
-    
+  if ( flag == 'f' )
+    quick_sort( lines, 0, line_count - 1, alpha_compar, reverse );      
+  else if ( flag == 'n' )
+    quick_sort( lines, 0, line_count - 1, numeric_compar, reverse );
+  else
+    quick_sort( lines, 0, line_count - 1, ascii_compar, reverse );
+  
 }
 
 // Prints the lines
@@ -265,7 +321,7 @@ int populate_array( char *lines[] ){
  *
  */
 int ascii_compar( const void *c1, const void *c2 ) {
-  return strcmp( *(char**)c1, *(char**)c2 );
+  return strcmp( (char*)c1, (char*)c2 );
 }
 
 /** Compare the alphabetical value of two characters (case insensitive)
@@ -273,22 +329,22 @@ int ascii_compar( const void *c1, const void *c2 ) {
  */
 int alpha_compar( const void *c1, const void *c2 ) {
   // Allocate to the temporary lower case string copies
-  char *l1 = malloc( strlen(*(char**)c1) + 1 ),
-    *l2 = malloc( strlen(*(char**)c2) + 1 ),
+  char *l1 = malloc( strlen((char*)c1) + 1 ),
+    *l2 = malloc( strlen((char*)c2) + 1 ),
     *start1 = l1,
     *start2 = l2;
   
   // Copy the case sensitive strings
-  l1 = strcpy( l1, *(char**)c1 );
-  l2 = strcpy( l2, *(char**)c2 );
+  l1 = strcpy( l1, (char*)c1 );
+  l2 = strcpy( l2, (char*)c2 );
 
   // Make each character in the first string lower case
-  for( int i = 0; i < (int)strlen(*(char**)c1); ++i ){
+  for( int i = 0; i < (int)strlen((char*)c1); ++i ){
     l1[i] = tolower( l1[i] );
   }
 
   // Make each character in the second string lower case
-  for( int i = 0; i < (int)strlen(*(char**)c2); ++i ){
+  for( int i = 0; i < (int)strlen((char*)c2); ++i ){
     l2[i] = tolower( l2[i] );
   }
 
@@ -297,7 +353,7 @@ int alpha_compar( const void *c1, const void *c2 ) {
   l2 = start2;
   
   // Run ascii_compar on altered character pointers
-  int comp =  ascii_compar( &l1, &l2 );
+  int comp =  ascii_compar( l1, l2 );
 
   // Free
   free(l1);
@@ -315,13 +371,13 @@ int numeric_compar( const void *c1, const void *c2 ) {
   char *rest1, *rest2;
   
   // Number conversions of the string
-  long num1 = mystrtol( *(char**)c1, &rest1 );
-  long num2 = mystrtol( *(char**)c2, &rest2 );
+  long num1 = mystrtol( (char*)c1, &rest1 );
+  long num2 = mystrtol( (char*)c2, &rest2 );
   // Comparisons
   if( num1 < num2 )
     return -1;
   else if( num1 > num2 )
     return 1;
   else
-    return ascii_compar( &rest1, &rest2 );
+    return ascii_compar( rest1, rest2 );
 }

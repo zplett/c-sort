@@ -34,5 +34,5 @@ void free_lines( char *lines[], int line_num );
 
 #ifndef PROCESS_FLAGS
 #define PROCESS_FLAGS
-void process_flags( int argc, char *argv[], char *lines[], int line_count );
+char process_flags( int argc, char *argv[], int* reverse );
 #endif
